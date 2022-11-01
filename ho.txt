@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Github Finders</title>
+  <link rel="stylesheet" href="dist/css/bootstrap.min.css">
+</head>
+<body>
+  
+  <nav class="navbar navbar-dark bg-primary mb-3">
+    <div class="container">
+      <a href="#" class="navbar-brand">GitHub Finder</a>
+    </div>
+  </nav>
+  <div class="container searchContainer">
+    <div class="search card card-body">
+      <h1>Search GitHub Users</h1>
+      <p class="lead">Enter a username to fetch a user profile and repos</p>
+      <input type="text" id="searchUser" class="form-control" placeholder="GitHub Username...">
+    </div>
+    <br>
+    <div id="profile"></div>
+  </div>
+
+  <footer class="mt-5 p-3 text-center bg-light">
+    GitHub Finder &copy;
+  </footer>
+
+  <script src="dist/js/jquery.min.js"></script>
+  <script src="dist/js/bootstrap.min.js"></script>
+  <script src="./git.js"></script>
+  <script src="./app.js"></script>
+  <script src="./ui.js"></script>
+
+</body>
+</html>
+
+
+const github = new Github;
+
+
+// Search input event listener
+searchUser.addEventListener('keyup', (e) => {
+  // Get input text
+  const userText = e.target.value;
+
+  if(userText !== ''){
+  //console.log(userText)
+  // Make http call
+  github.getUser(userText)
+  .then(data => {
+  console.log(data)
+  })
+  } 
+}); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Init Github
+const github = new Github;
+
+// Search input
+const searchUser = document.getElementById('searchUser');
+
+// Search input event listener
+searchUser.addEventListener('keyup', (e) => {
+  // Get input text
+  const userText = e.target.value;
+
+  if(userText !== ''){
+   // Make http call
+   github.getUser(userText)
+    .then(data => {
+      if(data.profile.message === 'Not Found') {
+        // Show alert
+
+      } else {
+        // Show profile
+      }
+    })
+  } else {
+    // Clear profile
+    
+  }
+}); 
+
+
+
+
+
+
+//Github
+
+class Github {
+  constructor() {
+    this.client_id = 'd9308aacf8b204d361fd';
+    this.client_secret = '84969aeef73956f4ec9e8716d1840532802bb81b';
+  }
+
+  async getUser(user) {
+    const profileResponse = await fetch(`https://api.github.com/users/${user}?client_id=${this.client_id}&client_secret=${this.client_secret}`);
+
+    const profile = await profileResponse.json();
+
+    return {
+      profile
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class UI {
+  constructor() {
+    this.profile = document.getElementById('profile');
+  }
+
+  showProfile(user) {
+    this.profile.innerHTML = `
+      <div class="card card-body mb-3">
+        <div class="row">
+          <div class="col-md-3">
+            <img class="img-fluid mb-2" src="${user.avatar_url}">
+            <a href="${user.html_url}" target="_blank" class="btn btn-primary btn-block mb-4">View Profile</a>
+          </div>
+          <div class="col-md-9">
+            <span class="badge badge-primary">Public Repos: ${user.public_repos}</span>
+            <span class="badge badge-secondary">Public Gists: ${user.public_gists}</span>
+            <span class="badge badge-success">Followers: ${user.followers}</span>
+            <span class="badge badge-info">Following: ${user.following}</span>
+            <br><br>
+            <ul class="list-group">
+              <li class="list-group-item">Company: ${user.company}</li>
+              <li class="list-group-item">Website/Blog: ${user.blog}</li>
+              <li class="list-group-item">Location: ${user.location}</li>
+              <li class="list-group-item">Member Since: ${user.created_at}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <h3 class="page-heading mb-3">Latest Repos</h3>
+      <div id="repos"></div>
+    `;
+  }
+}
+
+
+
+
+// Init Github
+const github = new Github;
+// Init UI
+const ui = new UI;
+
+// Search input
+const searchUser = document.getElementById('searchUser');
+
+// Search input event listener
+searchUser.addEventListener('keyup', (e) => {
+  // Get input text
+  const userText = e.target.value;
+
+  if(userText !== ''){
+   // Make http call
+   github.getUser(userText)
+    .then(data => {
+      if(data.profile.message === 'Not Found') {
+        // Show alert
+
+      } else {
+        // Show profile
+        ui.showProfile(data.profile);
+      }
+    })
+  } else {
+    // Clear profile
+    
+  }
+}); 
